@@ -51,4 +51,4 @@ Notes/chords play on MIDI channel 1 at full velocity, though this can easily be 
 An additional bass note, an octave down, will play on MIDI channel 2 at full velocity too, giving you the option of having a bass sound on a separate synth. 
 
 
-
+https://www.youtube.com/watch?v=iVq9uU2GkV4
