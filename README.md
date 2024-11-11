@@ -1,7 +1,7 @@
 
 # MIDI Polyphonic Step Sequencer
 
-This is an Arduino Nan-based, MIDI, quantised, polyphonic step sequencer. 
+This is an Arduino Nano-based, MIDI, quantised, polyphonic step sequencer. 
 
 Features: 
 
@@ -49,6 +49,8 @@ You can choose two playback modes, forward or ping-pong. In ping-pong, the seque
 Notes/chords play on MIDI channel 1 at full velocity, though this can easily be adjusted in the code. 
 
 An additional bass note, an octave down, will play on MIDI channel 2 at full velocity too, giving you the option of having a bass sound on a separate synth. 
+
+I'm working on MIDI clock and 2PPQN sync for things like Pocket Operators.
 
 
 https://www.youtube.com/watch?v=iVq9uU2GkV4
