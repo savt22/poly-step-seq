@@ -31,7 +31,8 @@ int bpm = 120;
 float notetime = ((60000000 / bpm) * 4);
 float semiq = (notetime / 32);
 float ppqn = (60000000 / bpm);
-float clockledtime = ppqn;
+float ppqn24 = ppqn / 24;
+float clockledtime = (ppqn / 2);
 
 int timearray[9] = {2, 4, 8, 16, 32, 64, 128, 256, 256};
 
@@ -129,6 +130,8 @@ const int clock_led = 12;
 float clock_led_previous = 0;
 float clockledswitchon1;
 float clockledswitchon2;
+float midiclockstart = 0;
+float midiclockprevious = 0;
 
 int clock_led_state = HIGH;
 //steps
@@ -201,6 +204,19 @@ void off() {
 
 }
 
+void midiclock() {
+  if (digitalRead(onoff) == HIGH){
+    midiclockstart = micros();
+    if (midiclockstart - midiclockprevious > ppqn24) {
+      midiclockprevious = midiclockstart; 
+      Serial.write(248);
+    }
+  } else {
+      midiclockprevious = 0;
+      midiclockstart = 0;
+  }
+}
+
 void n1b() {
   float n1bt;
   if (note != prior_note) {
@@ -211,18 +227,7 @@ void n1b() {
     current5th = (note15th + octavenote + rootnote);
     currentharmmap = notearray[(note1map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n1bcurrent = micros();
   }
   
@@ -234,12 +239,7 @@ void n1b() {
   if (note != prior_note){
     digitalWrite(n1led, LOW);
     pingpong = 0;
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 }
 
@@ -248,23 +248,13 @@ void n1() {
   if (note != prior_note) {
     prior_note = note; 
     digitalWrite(n1led, HIGH);
+    Serial.write(250);
     currentnote = (note1 + octavenote + rootnote);
     current3rd = (note13rd + octavenote + rootnote);
     current5th = (note15th + octavenote + rootnote);
     currentharmmap = notearray[(note1map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n1current = micros();
   }
   
@@ -279,12 +269,7 @@ void n1() {
 
   if (note != prior_note){
     digitalWrite(n1led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 }
 
@@ -298,18 +283,7 @@ void n2() {
     current5th = (note25th + octavenote + rootnote);
     currentharmmap = notearray[(note2map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n2current = micros();
   }
 
@@ -324,12 +298,7 @@ void n2() {
 
   if (note != prior_note){
     digitalWrite(n2led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 }
 
@@ -343,18 +312,7 @@ void n3() {
     current5th = (note35th + octavenote + rootnote);
     currentharmmap = notearray[(note3map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n3current = micros();
   }
   
@@ -369,12 +327,7 @@ void n3() {
 
   if (note != prior_note){
     digitalWrite(n3led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 }
 
@@ -388,18 +341,7 @@ void n4() {
     current5th = (note45th + octavenote + rootnote);
     currentharmmap = notearray[(note4map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n4current = micros();
   }
 
@@ -414,12 +356,7 @@ void n4() {
 
   if (note != prior_note){
     digitalWrite(n4led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 }
 
@@ -433,18 +370,7 @@ void n5() {
     current5th = (note55th + octavenote + rootnote);
     currentharmmap = notearray[(note5map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n5current = micros();
   }
   
@@ -459,12 +385,7 @@ void n5() {
 
   if (note != prior_note){
     digitalWrite(n5led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 }
 
@@ -478,18 +399,7 @@ void n6() {
     current5th = (note65th + octavenote + rootnote);
     currentharmmap = notearray[(note7map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    } 
+    midinoteon();
     n6current = micros();
   }
 
@@ -504,12 +414,7 @@ void n6() {
 
   if (note != prior_note){
     digitalWrite(n6led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 }
 
@@ -523,18 +428,7 @@ void n7() {
     current5th = (note75th + octavenote + rootnote);
     currentharmmap = notearray[(note1map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n7current = micros();
   }
   
@@ -549,12 +443,7 @@ void n7() {
 
   if (note != prior_note){
     digitalWrite(n7led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 }
 
@@ -568,18 +457,7 @@ void n8() {
     current5th = (note85th + octavenote + rootnote);
     currentharmmap = notearray[(note8map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n8current = micros();
   }
 
@@ -600,12 +478,7 @@ void n8() {
   if (note != prior_note){
     digitalWrite(n8led, LOW);
     digitalWrite(n8led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }  
 }
 
@@ -619,18 +492,7 @@ void n8b() {
     current5th = (note85th + octavenote + rootnote);
     currentharmmap = notearray[(note8map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
-    if (mode == "mono") {  
-      MIDI.sendNoteOn(currentnote, 127, 1);
-    } else {
-      MIDI.sendNoteOn(currentnote, 127, 1);
-      MIDI.sendNoteOn((currentnote - 12), 127, 1);
-      MIDI.sendNoteOn(current3rd, 127, 1);
-      MIDI.sendNoteOn(current5th, 127, 1);
-      if (harmonyoff == 0) {
-      } else {
-        MIDI.sendNoteOn(currentharm, 127, 1);
-      }
-    }
+    midinoteon();
     n8bcurrent = micros();
   }
 
@@ -645,12 +507,7 @@ void n8b() {
 
   if (note != prior_note){
     digitalWrite(n8led, LOW);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 2);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
   }
 
 }
@@ -699,6 +556,31 @@ void clockledoff() {
     digitalWrite(clock_led, LOW);
   }
 
+}
+
+void midinoteon() {
+  if (mode == "mono") {  
+  MIDI.sendNoteOn(currentnote, 127, 1);
+  } else {
+    MIDI.sendNoteOn(currentnote, 127, 1);
+    MIDI.sendNoteOn((currentnote - 12), 127, 1);
+    MIDI.sendNoteOn(current3rd, 127, 1);
+    MIDI.sendNoteOn(current5th, 127, 1);
+    if (harmonyoff == 0) {
+    } else {
+      MIDI.sendNoteOn(currentharm, 127, 1);
+    }
+  }
+
+}
+
+void midinoteoff () {
+  MIDI.sendNoteOff(currentnote, 0, 1);
+  MIDI.sendNoteOff((currentnote - 12), 0, 2);
+  MIDI.sendNoteOff((currentnote - 12), 0, 1);
+  MIDI.sendNoteOff(current3rd, 0, 1);
+  MIDI.sendNoteOff(current5th, 0, 1);
+  MIDI.sendNoteOff(currentharm, 0, 1); 
 }
 
 void checkmux () {
@@ -809,7 +691,8 @@ void checkmux () {
           notetime = ((60000000 / bpm) * 4);    
           semiq = (notetime / 32);
           ppqn = (60000000 / bpm);
-          clockledtime = ppqn;
+          clockledtime = (ppqn / 2);
+          ppqn24 = (ppqn / 24);
           updatescreen();
           break;
         case 1:
@@ -973,12 +856,8 @@ void loop() {
   if(digitalRead(onoff) == LOW){
     note = OFF;
     clockswitch = CLOCKOFF;
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff(currentnote, 0, 1);
-    MIDI.sendNoteOff((currentnote - 12), 0, 1);
-    MIDI.sendNoteOff(current3rd, 0, 1);
-    MIDI.sendNoteOff(current5th, 0, 1);
-    MIDI.sendNoteOff(currentharm, 0, 1); 
+    midinoteoff();
+    Serial.write(252);
   } 
   //state switches
   switch (note) {
@@ -1036,7 +915,8 @@ void loop() {
   } else {
     pingpongswitch = 0;
   }
-
+  
+  midiclock();
   checkmux();
 
 }
