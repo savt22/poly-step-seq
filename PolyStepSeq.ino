@@ -159,6 +159,7 @@ int pingpongswitch = 0;
 const int pingpongpin = 11;
 //on/off
 int onoff = 10;
+int offswitch = 1;
 
 //states
 enum notes {
@@ -191,29 +192,30 @@ void off() {
    pingpong = 0;
    prior_note = OFF;
    note = N1;
+   offswitch = 1;
   } else {
-    digitalWrite(n1led, LOW);
-    digitalWrite(n2led, LOW);
-    digitalWrite(n3led, LOW);
-    digitalWrite(n4led, LOW);
-    digitalWrite(n5led, LOW);
-    digitalWrite(n6led, LOW);
-    digitalWrite(n7led, LOW);
-    digitalWrite(n8led, LOW);
+    if (offswitch == 1) {
+      digitalWrite(n1led, LOW);
+      digitalWrite(n2led, LOW);
+      digitalWrite(n3led, LOW);
+      digitalWrite(n4led, LOW);
+      digitalWrite(n5led, LOW);
+      digitalWrite(n6led, LOW);
+      digitalWrite(n7led, LOW);
+      digitalWrite(n8led, LOW);
+      midinoteoff();
+      Serial.write(252);
+      offswitch = 0;
+    }
   }
 
 }
 
 void midiclock() {
-  if (digitalRead(onoff) == HIGH){
-    midiclockstart = micros();
-    if (midiclockstart - midiclockprevious > ppqn24) {
-      midiclockprevious = midiclockstart; 
-      Serial.write(248);
-    }
-  } else {
-      midiclockprevious = 0;
-      midiclockstart = 0;
+  midiclockstart = micros();
+  if (midiclockstart - midiclockprevious > ppqn24) {
+    midiclockprevious = midiclockstart; 
+    Serial.write(248);
   }
 }
 
@@ -856,8 +858,6 @@ void loop() {
   if(digitalRead(onoff) == LOW){
     note = OFF;
     clockswitch = CLOCKOFF;
-    midinoteoff();
-    Serial.write(252);
   } 
   //state switches
   switch (note) {
