@@ -2,6 +2,7 @@
 #include "SSD1306Ascii.h"
 #include "SSD1306AsciiAvrI2c.h"
 #include <MIDI.h>
+#include <uClock.h>
 
 //screen setup
 #define OLED_WIDTH 128
@@ -33,8 +34,19 @@ float semiq = (notetime / 32);
 float ppqn = (60000000 / bpm);
 float ppqn24 = ppqn / 24;
 float clockledtime = (ppqn / 2);
+int steptick = 0;
+int steptick1b;
+int steptick1;
+int steptick2;
+int steptick3;
+int steptick4;
+int steptick5;
+int steptick6;
+int steptick7;
+int steptick8;
+int steptick8b;
 
-int timearray[9] = {2, 4, 8, 16, 32, 64, 128, 256, 256};
+int timearray[9] = {1, 2, 4, 8, 16, 32, 64, 128, 256};
 
 //control variables
 
@@ -135,24 +147,14 @@ float midiclockprevious = 0;
 
 int clock_led_state = HIGH;
 //steps
-float n1bcurrent;
 const int n1led = 2;
-float n1current;
 const int n2led = 3;
-float n2current;
 const int n3led = 4;
-float n3current;
 const int n4led = 5;
-float n4current;
 const int n5led = 6;
-float n5current;
 const int n6led = 7;
-float n6current;
 const int n7led = 8;
-float n7current;
 const int n8led = 9;
-float n8current;
-float n8bcurrent; 
 //pingpong
 int pingpong = 0;
 int pingpongswitch = 0;
@@ -211,17 +213,17 @@ void off() {
 
 }
 
-void midiclock() {
-  midiclockstart = micros();
-  if (midiclockstart - midiclockprevious > ppqn24) {
-    midiclockprevious = midiclockstart; 
-    Serial.write(248);
-  }
+void onSync24Callback(uint32_t tick) {
+  Serial.write(248);
+}
+
+void onStepCallback(uint32_t step) {
+  ++steptick;
 }
 
 void n1b() {
-  float n1bt;
   if (note != prior_note) {
+    steptick1 = steptick;
     prior_note = note; 
     digitalWrite(n1led, HIGH);
     currentnote = (note1 + octavenote + rootnote);
@@ -230,11 +232,9 @@ void n1b() {
     currentharmmap = notearray[(note1map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n1bcurrent = micros();
   }
   
-  n1bt = micros();
-  if (n1bt >= n1bcurrent + (time1*semiq)){
+  if (steptick - steptick1 > time1) {
     note = N2;
   }
 
@@ -246,8 +246,8 @@ void n1b() {
 }
 
 void n1() {
-  float n1t;
   if (note != prior_note) {
+    steptick1b = steptick;
     prior_note = note; 
     digitalWrite(n1led, HIGH);
     Serial.write(250);
@@ -257,11 +257,9 @@ void n1() {
     currentharmmap = notearray[(note1map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n1current = micros();
   }
   
-  n1t = micros();
-  if (n1t >= n1current + (time1*semiq)){
+  if (steptick - steptick1b == time1) {
     if(pingpong == 1){
       note = N1b;
     } else {
@@ -276,8 +274,8 @@ void n1() {
 }
 
 void n2() {
-  float n2t;
   if (note != prior_note) {
+    steptick2 = steptick;
     prior_note = note; 
     digitalWrite(n2led, HIGH);
     currentnote = (note2 + octavenote + rootnote);
@@ -286,11 +284,9 @@ void n2() {
     currentharmmap = notearray[(note2map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n2current = micros();
   }
 
-  n2t = micros();
-  if (n2t >= n2current + (time2*semiq)){
+  if (steptick - steptick2 == time2) {
     if(pingpong == 1){
       note = N1;
     } else {
@@ -305,8 +301,8 @@ void n2() {
 }
 
 void n3() {
-  float n3t;
   if (note != prior_note) {
+    steptick3 = steptick;
     prior_note = note; 
     digitalWrite(n3led, HIGH);
     currentnote = (note3 + octavenote + rootnote);
@@ -315,11 +311,9 @@ void n3() {
     currentharmmap = notearray[(note3map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n3current = micros();
   }
   
-  n3t = micros();
-  if (n3t >= n3current + (time3*semiq)){
+  if (steptick - steptick3 == time3) {
     if(pingpong == 1){
       note = N2;
     } else {
@@ -334,8 +328,8 @@ void n3() {
 }
 
 void n4() {
-  float n4t;
   if (note != prior_note) {
+    steptick4 = steptick;
     prior_note = note; 
     digitalWrite(n4led, HIGH);
     currentnote = (note4 + octavenote + rootnote);
@@ -344,11 +338,9 @@ void n4() {
     currentharmmap = notearray[(note4map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n4current = micros();
   }
 
-  n4t = micros();
-  if (n4t >= n4current + (time4*semiq)){
+  if (steptick - steptick4 == time4){
     if(pingpong == 1){
       note = N3;
     } else {
@@ -363,8 +355,8 @@ void n4() {
 }
 
 void n5() {
-  float n5t;
   if (note != prior_note) {
+    steptick5 = steptick;
     prior_note = note; 
     digitalWrite(n5led, HIGH);
     currentnote = (note5 + octavenote + rootnote);
@@ -373,11 +365,9 @@ void n5() {
     currentharmmap = notearray[(note5map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n5current = micros();
   }
   
-  n5t = micros();
-  if (n5t >= n5current + (time5*semiq)){
+  if (steptick - steptick5 == time5){
     if(pingpong == 1){
       note = N4;
     } else {
@@ -392,8 +382,8 @@ void n5() {
 }
 
 void n6() {
-  float n6t;
   if (note != prior_note) {
+    steptick6 = steptick;
     prior_note = note; 
     digitalWrite(n6led, HIGH);
     currentnote = (note6 + octavenote + rootnote);
@@ -402,11 +392,9 @@ void n6() {
     currentharmmap = notearray[(note7map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n6current = micros();
   }
 
-  n6t = micros();
-  if (n6t >= n6current + (time6*semiq)){
+  if (steptick - steptick6 == time6){
     if(pingpong == 1){
       note = N5;
     } else {
@@ -421,8 +409,8 @@ void n6() {
 }
 
 void n7() {
-  float n7t;
   if (note != prior_note) {
+    steptick7 = steptick;
     prior_note = note; 
     digitalWrite(n7led, HIGH);
     currentnote = (note7 + octavenote + rootnote);
@@ -431,11 +419,9 @@ void n7() {
     currentharmmap = notearray[(note1map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n7current = micros();
   }
   
-  n7t = micros();
-  if (n7t >= n7current + (time7*semiq)){
+  if (steptick - steptick7 == time7){
     if(pingpong == 1){
       note = N6;
     } else {
@@ -450,8 +436,8 @@ void n7() {
 }
 
 void n8() {
-  float n8t;
   if (note != prior_note) {
+    steptick8 = steptick;
     prior_note = note; 
     digitalWrite(n8led, HIGH);
     currentnote = (note8 + octavenote + rootnote);
@@ -460,11 +446,9 @@ void n8() {
     currentharmmap = notearray[(note8map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n8current = micros();
   }
 
-  n8t = micros();
-  if (n8t >= n8current + (time8*semiq)){
+  if (steptick - steptick8 == time8){
     if (pingpongswitch == 1){
       pingpong = 1;
     } else {
@@ -485,8 +469,8 @@ void n8() {
 }
 
 void n8b() {
-  float n8bt;
   if (note != prior_note) {
+    steptick8b = steptick;
     prior_note = note; 
     digitalWrite(n8led, HIGH);
     currentnote = (note8 + octavenote + rootnote);
@@ -495,11 +479,9 @@ void n8b() {
     currentharmmap = notearray[(note8map + harmony)];
     currentharm = (currentharmmap + octavenote + harmonyoctave + rootnote);
     midinoteon();
-    n8bcurrent = micros();
   }
 
-  n8bt = micros();
-  if (n8bt >= n8bcurrent + (time8*semiq)){
+  if (steptick - steptick8b == time8){
     if(pingpong = 1){
       note = N7;
     } else {
@@ -597,7 +579,7 @@ void checkmux () {
     notemap = map(notemuxread, 0, 1023, 0, 14);
     timemap = map(notemuxread, 0, 1023, 0, 8);
 
-    if (notemuxread > (notemuxvalues[noteinput] + 8) || notemuxread < (notemuxvalues[noteinput] - 8)) {
+    if (notemuxread > (notemuxvalues[noteinput] + 10) || notemuxread < (notemuxvalues[noteinput] - 10)) {
       notemuxvalues[noteinput] = notemuxread;
 
       switch (noteinput) {
@@ -684,17 +666,13 @@ void checkmux () {
 
     int controlmuxread = analogRead(controlmuxin);
 
-    if (controlmuxread > (controlmuxvalues[controlinput] + 8) || controlmuxread < (controlmuxvalues[controlinput] - 8)) {
+    if (controlmuxread > (controlmuxvalues[controlinput] + 10) || controlmuxread < (controlmuxvalues[controlinput] - 10)) {
       controlmuxvalues[controlinput] = controlmuxread;
 
       switch (controlinput) {
         case 0:
           bpm = map(controlmuxread, 0, 1023, 40, 200);
-          notetime = ((60000000 / bpm) * 4);    
-          semiq = (notetime / 32);
-          ppqn = (60000000 / bpm);
-          clockledtime = (ppqn / 2);
-          ppqn24 = (ppqn / 24);
+          uClock.setTempo(bpm);
           updatescreen();
           break;
         case 1:
@@ -848,6 +826,12 @@ void setup() {
   priorclockswitch = CLOCKOFF;
   clockswitch = ON;
   notearray = majorscale;
+  
+  uClock.init();
+  uClock.setOnSync24(onSync24Callback);
+  uClock.setOnStep(onStepCallback);
+  uClock.setTempo(120);
+  uClock.start();
 
 
 }
@@ -916,7 +900,6 @@ void loop() {
     pingpongswitch = 0;
   }
   
-  midiclock();
   checkmux();
 
 }
