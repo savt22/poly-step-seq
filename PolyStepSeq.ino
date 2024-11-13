@@ -29,11 +29,7 @@ static int controlmuxvalues[muxchannels] = {2000, 2000, 2000, 2000, 2000, 2000, 
 
 //step variables
 int bpm = 120;
-float notetime = ((60000000 / bpm) * 4);
-float semiq = (notetime / 32);
-float ppqn = (60000000 / bpm);
-float ppqn24 = ppqn / 24;
-float clockledtime = (ppqn / 2);
+int clockstep;
 int steptick = 0;
 int steptick1b;
 int steptick1;
@@ -137,15 +133,12 @@ char harmonyname [8] [7] = {"2nd", "4th", "6th", "7th", "2nd", "4th", "6th", "7t
 char keyname[12] [5] = {"C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"};
 char notename[128] [5] = {"C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G" };
 char scalename[7] [6] = {"maj", "lyd", "mix", "min", "dor", "phr", "chr"};
-//clockled
+
+//clock
 const int clock_led = 12;
-float clock_led_previous = 0;
-float clockledswitchon1;
-float clockledswitchon2;
 float midiclockstart = 0;
 float midiclockprevious = 0;
 
-int clock_led_state = HIGH;
 //steps
 const int n1led = 2;
 const int n2led = 3;
@@ -194,6 +187,8 @@ void off() {
    pingpong = 0;
    prior_note = OFF;
    note = N1;
+   uClock.start();
+   Serial.write(250);
    offswitch = 1;
   } else {
     if (offswitch == 1) {
@@ -206,6 +201,7 @@ void off() {
       digitalWrite(n7led, LOW);
       digitalWrite(n8led, LOW);
       midinoteoff();
+      uClock.stop();
       Serial.write(252);
       offswitch = 0;
     }
@@ -234,7 +230,7 @@ void n1b() {
     midinoteon();
   }
   
-  if (steptick - steptick1 > time1) {
+  if (steptick - steptick1 == time1) {
     note = N2;
   }
 
@@ -250,7 +246,6 @@ void n1() {
     steptick1b = steptick;
     prior_note = note; 
     digitalWrite(n1led, HIGH);
-    Serial.write(250);
     currentnote = (note1 + octavenote + rootnote);
     current3rd = (note13rd + octavenote + rootnote);
     current5th = (note15th + octavenote + rootnote);
@@ -497,40 +492,38 @@ void n8b() {
 }
 
 void clockledon() {
-  float clockledtimeon1;
+
   if (clockswitch != priorclockswitch) {
+    clockstep = steptick;
     priorclockswitch = clockswitch;
     digitalWrite(clock_led, HIGH);
-    clockledswitchon1 = micros();
   }
   
-  clockledtimeon1 = micros();
-  if (clockledtimeon1 >= clockledswitchon1 + clockledtime) {
+  if (steptick - clockstep == 1) {
     clockswitch = ON2;
   }
 
   if (clockswitch != priorclockswitch){
     digitalWrite(clock_led, LOW);
   }
- }
+}
 
 void clockledon2() {
-  float clockledtimeon2;
-  if (clockswitch != priorclockswitch){
+
+  if (clockswitch != priorclockswitch) {
+    clockstep = steptick;
     priorclockswitch = clockswitch;
     digitalWrite(clock_led, LOW);
-    clockledswitchon2 = micros();
   }
   
-  clockledtimeon2 = micros();
-  if (clockledtimeon2 >= clockledswitchon2 + clockledtime) {
+  if (steptick - clockstep == 1) {
     clockswitch = ON;
   }
 
   if (clockswitch != priorclockswitch){
     digitalWrite(clock_led, HIGH);
   }
- }
+}
 
 void clockledoff() {
   if(digitalRead(onoff) == HIGH){
@@ -572,7 +565,7 @@ void checkmux () {
   unsigned long notereadstart = micros();
   static unsigned long notereadprevious = 0;
 
-  if (notereadstart - notereadprevious >= 1000) {
+  if (notereadstart - notereadprevious >= 100000) {
     notereadprevious = notereadstart;
 
     int notemuxread = analogRead(notetimemuxin);
@@ -831,8 +824,6 @@ void setup() {
   uClock.setOnSync24(onSync24Callback);
   uClock.setOnStep(onStepCallback);
   uClock.setTempo(120);
-  uClock.start();
-
 
 }
 
@@ -903,6 +894,3 @@ void loop() {
   checkmux();
 
 }
-
-
-
