@@ -30,7 +30,8 @@ static int controlmuxvalues[muxchannels] = {2000, 2000, 2000, 2000, 2000, 2000, 
 //step variables
 int bpm = 120;
 int clockstep;
-int steptick = 0;
+int startstep;
+int steptick;
 int steptick1b;
 int steptick1;
 int steptick2;
@@ -96,14 +97,22 @@ int note8map;
 
 int notemap = 0;
 int timemap = 5;
-float time1 = 16;
-float time2 = 16;
-float time3 = 16;
-float time4 = 16;
-float time5 = 16;
-float time6 = 16;
-float time7 = 16;
-float time8 = 16;
+int time1 = 16;
+int time2 = 16;
+int time3 = 16;
+int time4 = 16;
+int time5 = 16;
+int time6 = 16;
+int time7 = 16;
+int time8 = 16;
+int time1map;
+int time2map;
+int time3map;
+int time4map;
+int time5map;
+int time6map;
+int time7map;
+int time8map;
 
 const int *notearray = NULL;
 
@@ -123,7 +132,8 @@ int harmonymap;
 int harmonynote;
 int harmonyoctave;
 int harmonyoff;
-int noteonoff;
+int randomswitch;
+int randomswitchrun = 1;
 int currentharm = 0;
 int currentharmmap;
 
@@ -136,8 +146,6 @@ char scalename[7] [6] = {"maj", "lyd", "mix", "min", "dor", "phr", "chr"};
 
 //clock
 const int clock_led = 12;
-float midiclockstart = 0;
-float midiclockprevious = 0;
 
 //steps
 const int n1led = 2;
@@ -184,12 +192,16 @@ clock clockswitch, priorclockswitch;
 //functions
 void off() {
   if(digitalRead(onoff) == HIGH){
-   pingpong = 0;
-   prior_note = OFF;
-   note = N1;
-   uClock.start();
-   Serial.write(250);
-   offswitch = 1;
+    if (steptick - startstep == 1) {
+      pingpong = 0;
+      prior_note = OFF;
+      note = N1;
+      priorclockswitch = CLOCKOFF;
+      clockswitch = ON;
+      //uClock.start();
+      Serial.write(250);
+      offswitch = 1;
+    }
   } else {
     if (offswitch == 1) {
       digitalWrite(n1led, LOW);
@@ -201,10 +213,12 @@ void off() {
       digitalWrite(n7led, LOW);
       digitalWrite(n8led, LOW);
       midinoteoff();
-      uClock.stop();
+      //uClock.stop();
+      steptick = 0;
       Serial.write(252);
       offswitch = 0;
     }
+    startstep = steptick;
   }
 
 }
@@ -525,16 +539,6 @@ void clockledon2() {
   }
 }
 
-void clockledoff() {
-  if(digitalRead(onoff) == HIGH){
-   priorclockswitch = CLOCKOFF;
-   clockswitch = ON;
-  } else {
-    digitalWrite(clock_led, LOW);
-  }
-
-}
-
 void midinoteon() {
   if (mode == "mono") {  
   MIDI.sendNoteOn(currentnote, 127, 1);
@@ -560,12 +564,78 @@ void midinoteoff () {
   MIDI.sendNoteOff(currentharm, 0, 1); 
 }
 
+void randomgen () {
+  if (randomswitch == 1) {
+    if (digitalRead(onoff) == LOW) {
+    if (randomswitchrun == 1) {
+        note8map = random(0, 14);
+        note8 = notearray[note8map];
+        note83rd = notearray[(note8map + 2)];
+        note85th = notearray[(note8map +4)];
+        note7map = random(0, 14);
+        note7 = notearray[note7map];
+        note73rd = notearray[(note7map + 2)];
+        note75th = notearray[(note7map +4)];
+        note6map = random(0, 14);
+        note6 = notearray[note6map];
+        note63rd = notearray[(note6map + 2)];
+        note65th = notearray[(note6map +4)];
+        note5map = random(0, 14);
+        note5 = notearray[note5map];
+        note53rd = notearray[(note5map + 2)];
+        note55th = notearray[(note5map +4)];
+        note4map = random(0, 14);
+        note4 = notearray[note4map];
+        note43rd = notearray[(note4map + 2)];
+        note45th = notearray[(note4map +4)];
+        note3map = random(0, 14);
+        note3 = notearray[note3map];
+        note33rd = notearray[(note3map + 2)];
+        note35th = notearray[(note3map +4)];
+        note2map = random(0, 14);
+        note2 = notearray[note2map];
+        note23rd = notearray[(note2map + 2)];
+        note25th = notearray[(note2map +4)];
+        note1map = random(0, 14);
+        note1 = notearray[note1map];
+        note13rd = notearray[(note1map + 2)];
+        note15th = notearray[(note1map +4)];
+        time8map = random(0, 3);
+        time8 = timearray[time8map];
+        time7map = random(0, 3);
+        time7 = timearray[time7map];
+        time6map = random(0, 3);
+        time6 = timearray[time6map];
+        time5map = random(0, 3);
+        time5 = timearray[time5map];
+        time4map = random(0, 3);
+        time4 = timearray[time4map];
+        time3map = random(0, 3);
+        time3 = timearray[time3map];
+        time2map = random(0, 3);
+        time2 = timearray[time2map];
+        time1map = random(0, 3);
+        time1 = timearray[time1map];
+        randomswitchrun = 0;
+      }
+    }
+  } else {
+    if (randomswitchrun == 0) {
+      for (int i = 0; i < 16; i++) {
+        int notereset = notemuxvalues[i];
+        notemuxvalues[i] = (notereset + 12);
+        randomswitchrun = 1;
+      }
+    }
+  }
+}
+
 void checkmux () {
 
   unsigned long notereadstart = micros();
   static unsigned long notereadprevious = 0;
 
-  if (notereadstart - notereadprevious >= 100000) {
+  if (notereadstart - notereadprevious >= 100) {
     notereadprevious = notereadstart;
 
     int notemuxread = analogRead(notetimemuxin);
@@ -724,7 +794,7 @@ void checkmux () {
           updatescreen();
           break;
         case 7:
-          noteonoff = map(controlmuxread, 0, 1023, 0, 1);
+          randomswitch = map(controlmuxread, 0, 1023, 0, 1);
           updatescreen();
           break;
       }
@@ -800,6 +870,8 @@ void setup() {
   pinMode(n8led, OUTPUT);
   digitalWrite(n8led, LOW);
 
+  randomSeed(analogRead(0));
+
   pinMode(pingpongpin, INPUT);
 
   pinMode(onoff, INPUT);
@@ -824,6 +896,7 @@ void setup() {
   uClock.setOnSync24(onSync24Callback);
   uClock.setOnStep(onStepCallback);
   uClock.setTempo(120);
+  uClock.start();
 
 }
 
@@ -880,7 +953,7 @@ void loop() {
       clockledon2();
       break;
     case CLOCKOFF:
-      clockledoff();
+      digitalWrite(clock_led, LOW);
       break;
   }
   
@@ -892,5 +965,6 @@ void loop() {
   }
   
   checkmux();
+  randomgen();
 
 }
