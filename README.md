@@ -50,7 +50,7 @@ Notes/chords play on MIDI channel 1 at full velocity, though this can easily be 
 
 An additional bass note, an octave down, will play on MIDI channel 2 at full velocity too, giving you the option of having a bass sound on a separate synth. 
 
-I'm working on MIDI clock and 2PPQN sync for things like Pocket Operators.
+There's also a random feature - toggling it on when the sequence is off will create a random bassline, each step of which can be edited after creation. 
 
+MIDI clock, MIDI start/stop now working, as is 2PPQN clock out (only tested with Pocket Operator on sync mode 4). 
 
-https://www.youtube.com/watch?v=iVq9uU2GkV4
