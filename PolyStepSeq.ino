@@ -105,6 +105,14 @@ int time5 = 16;
 int time6 = 16;
 int time7 = 16;
 int time8 = 16;
+int t1;
+int t2;
+int t3; 
+int t4;
+int t5;
+int t6;
+int t7;
+int t8;
 int time1map;
 int time2map;
 int time3map;
@@ -198,7 +206,6 @@ void off() {
       note = N1;
       priorclockswitch = CLOCKOFF;
       clockswitch = ON;
-      //uClock.start();
       Serial.write(250);
       offswitch = 1;
     }
@@ -213,14 +220,12 @@ void off() {
       digitalWrite(n7led, LOW);
       digitalWrite(n8led, LOW);
       midinoteoff();
-      //uClock.stop();
       steptick = 0;
       Serial.write(252);
       offswitch = 0;
     }
     startstep = steptick;
   }
-
 }
 
 void onSync24Callback(uint32_t tick) {
@@ -234,6 +239,7 @@ void onStepCallback(uint32_t step) {
 void n1b() {
   if (note != prior_note) {
     steptick1 = steptick;
+    t1 = time1;
     prior_note = note; 
     digitalWrite(n1led, HIGH);
     currentnote = (note1 + octavenote + rootnote);
@@ -244,7 +250,7 @@ void n1b() {
     midinoteon();
   }
   
-  if (steptick - steptick1 == time1) {
+  if (steptick - steptick1 == t1) {
     note = N2;
   }
 
@@ -258,6 +264,7 @@ void n1b() {
 void n1() {
   if (note != prior_note) {
     steptick1b = steptick;
+    t1 = time1;
     prior_note = note; 
     digitalWrite(n1led, HIGH);
     currentnote = (note1 + octavenote + rootnote);
@@ -268,7 +275,7 @@ void n1() {
     midinoteon();
   }
   
-  if (steptick - steptick1b == time1) {
+  if (steptick - steptick1b == t1) {
     if(pingpong == 1){
       note = N1b;
     } else {
@@ -285,6 +292,7 @@ void n1() {
 void n2() {
   if (note != prior_note) {
     steptick2 = steptick;
+    t2 = time2;
     prior_note = note; 
     digitalWrite(n2led, HIGH);
     currentnote = (note2 + octavenote + rootnote);
@@ -295,7 +303,7 @@ void n2() {
     midinoteon();
   }
 
-  if (steptick - steptick2 == time2) {
+  if (steptick - steptick2 == t2) {
     if(pingpong == 1){
       note = N1;
     } else {
@@ -312,6 +320,7 @@ void n2() {
 void n3() {
   if (note != prior_note) {
     steptick3 = steptick;
+    t3 = time3;
     prior_note = note; 
     digitalWrite(n3led, HIGH);
     currentnote = (note3 + octavenote + rootnote);
@@ -322,7 +331,7 @@ void n3() {
     midinoteon();
   }
   
-  if (steptick - steptick3 == time3) {
+  if (steptick - steptick3 == t3) {
     if(pingpong == 1){
       note = N2;
     } else {
@@ -339,6 +348,7 @@ void n3() {
 void n4() {
   if (note != prior_note) {
     steptick4 = steptick;
+    t4 = time4;
     prior_note = note; 
     digitalWrite(n4led, HIGH);
     currentnote = (note4 + octavenote + rootnote);
@@ -349,7 +359,7 @@ void n4() {
     midinoteon();
   }
 
-  if (steptick - steptick4 == time4){
+  if (steptick - steptick4 == t4){
     if(pingpong == 1){
       note = N3;
     } else {
@@ -366,6 +376,7 @@ void n4() {
 void n5() {
   if (note != prior_note) {
     steptick5 = steptick;
+    t5 = time5;
     prior_note = note; 
     digitalWrite(n5led, HIGH);
     currentnote = (note5 + octavenote + rootnote);
@@ -376,7 +387,7 @@ void n5() {
     midinoteon();
   }
   
-  if (steptick - steptick5 == time5){
+  if (steptick - steptick5 == t5){
     if(pingpong == 1){
       note = N4;
     } else {
@@ -393,6 +404,7 @@ void n5() {
 void n6() {
   if (note != prior_note) {
     steptick6 = steptick;
+    t6 = time6;
     prior_note = note; 
     digitalWrite(n6led, HIGH);
     currentnote = (note6 + octavenote + rootnote);
@@ -403,7 +415,7 @@ void n6() {
     midinoteon();
   }
 
-  if (steptick - steptick6 == time6){
+  if (steptick - steptick6 == t6){
     if(pingpong == 1){
       note = N5;
     } else {
@@ -420,6 +432,7 @@ void n6() {
 void n7() {
   if (note != prior_note) {
     steptick7 = steptick;
+    t7 = time7;
     prior_note = note; 
     digitalWrite(n7led, HIGH);
     currentnote = (note7 + octavenote + rootnote);
@@ -430,7 +443,7 @@ void n7() {
     midinoteon();
   }
   
-  if (steptick - steptick7 == time7){
+  if (steptick - steptick7 == t7){
     if(pingpong == 1){
       note = N6;
     } else {
@@ -447,6 +460,7 @@ void n7() {
 void n8() {
   if (note != prior_note) {
     steptick8 = steptick;
+    t8 = time8;
     prior_note = note; 
     digitalWrite(n8led, HIGH);
     currentnote = (note8 + octavenote + rootnote);
@@ -457,7 +471,7 @@ void n8() {
     midinoteon();
   }
 
-  if (steptick - steptick8 == time8){
+  if (steptick - steptick8 == t8){
     if (pingpongswitch == 1){
       pingpong = 1;
     } else {
@@ -480,6 +494,7 @@ void n8() {
 void n8b() {
   if (note != prior_note) {
     steptick8b = steptick;
+    t8 = time8;
     prior_note = note; 
     digitalWrite(n8led, HIGH);
     currentnote = (note8 + octavenote + rootnote);
@@ -490,7 +505,7 @@ void n8b() {
     midinoteon();
   }
 
-  if (steptick - steptick8b == time8){
+  if (steptick - steptick8b == t8){
     if(pingpong = 1){
       note = N7;
     } else {
