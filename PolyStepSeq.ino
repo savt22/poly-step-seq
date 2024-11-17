@@ -581,7 +581,6 @@ void midinoteoff () {
 
 void randomgen () {
   if (randomswitch == 1) {
-    if (digitalRead(onoff) == LOW) {
     if (randomswitchrun == 1) {
         note8map = random(0, 14);
         note8 = notearray[note8map];
@@ -633,7 +632,6 @@ void randomgen () {
         time1 = timearray[time1map];
         randomswitchrun = 0;
       }
-    }
   } else {
     if (randomswitchrun == 0) {
       for (int i = 0; i < 16; i++) {
