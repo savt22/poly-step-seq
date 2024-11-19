@@ -49,7 +49,7 @@ int timearray[9] = {1, 2, 4, 8, 16, 32, 64, 128, 256};
 
 int octave;
 int octavenote = 0;
-int octavearray[5] = {-24,-12,0,12,24};
+int octavearray[6] = {-24,-12,0,12,24,24};
 
 int rootnote = 0;
 int rootprevious = 0;
@@ -132,7 +132,7 @@ static const int dorianscale[21] = {48,50,51,53,55,57,58,60,62,63,65,67,69,70,72
 static const int phrygianscale[21] = {48,49,51,53,55,56,58,60,61,63,65,67,68,70,72,73,75,77,79,80,82};
 static const int chromaticscale[21] = {48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68};
 
-char modes[2] [7] = {"mono", "poly"};
+char modes[3] [7] = {"mono", "poly", "poly"};
 String mode = "mono";
 
 int harmony;
@@ -145,12 +145,12 @@ int randomswitchrun = 1;
 int currentharm = 0;
 int currentharmmap;
 
-static const int harmonyarray [8] = {1, 3, 5, 6, 1, 3, 5, 6};
-static const int harmonyoctavearray [8] = {0, 0, 0, 0, 12, 12, 12, 12};
-char harmonyname [8] [7] = {"2nd", "4th", "6th", "7th", "2nd", "4th", "6th", "7th"};
+static const int harmonyarray [9] = {1, 3, 5, 6, 1, 3, 5, 6, 6};
+static const int harmonyoctavearray [9] = {0, 0, 0, 0, 12, 12, 12, 12, 12};
+char harmonyname [9] [7] = {"2nd", "4th", "6th", "7th", "2nd", "4th", "6th", "7th"};
 char keyname[12] [5] = {"C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"};
 char notename[128] [5] = {"C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G" };
-char scalename[7] [6] = {"maj", "lyd", "mix", "min", "dor", "phr", "chr"};
+char scalename[8] [6] = {"maj", "lyd", "mix", "min", "dor", "phr", "chr", "chr"};
 
 //clock
 const int clock_led = 12;
@@ -580,7 +580,7 @@ void midinoteoff () {
 }
 
 void randomgen () {
-  if (randomswitch == 1) {
+  if ((randomswitch == 1) || (randomswitch == 2))  {
     if (randomswitchrun == 1) {
         note8map = random(0, 14);
         note8 = notearray[note8map];
@@ -756,7 +756,7 @@ void checkmux () {
           updatescreen();
           break;
         case 2:
-          scale = map(controlmuxread, 0, 1023, 0, 6);
+          scale = map(controlmuxread, 0, 1023, 0, 7);
           switch (scale) {
             case 0: //major
               notearray = majorscale;
@@ -778,6 +778,9 @@ void checkmux () {
             case 6: //chromatic (poly mode won't sound nice...)
               notearray = chromaticscale;
               break;
+            case 7:
+              notearray = chromaticscale;
+              break;
           }
           for (int i = 0; i < 8; i++) {
             int notereset = notemuxvalues[i];
@@ -786,28 +789,28 @@ void checkmux () {
           updatescreen();
           break;
         case 3:
-          octave = map(controlmuxread, 0, 1023, 0, 4);
+          octave = map(controlmuxread, 0, 1023, 0, 5);
           octavenote = octavearray[octave];
           updatescreen();
           break;
         case 4:
           modemap = analogRead(controlmuxin);
-          modemap = map(modemap, 0, 1023, 0, 1);
+          modemap = map(modemap, 0, 1023, 0, 2);
           mode = modes[modemap];
           updatescreen();
           break;
         case 5:
-          harmonymap = map(controlmuxread, 0, 1023, 0, 7);
+          harmonymap = map(controlmuxread, 0, 1023, 0, 8);
           harmony = harmonyarray[harmonymap];
           harmonyoctave = harmonyoctavearray[harmonymap];
           updatescreen();
           break;
         case 6:
-          harmonyoff = map(controlmuxread, 0 ,1023, 0, 1);
+          harmonyoff = map(controlmuxread, 0 ,1023, 0, 2);
           updatescreen();
           break;
         case 7:
-          randomswitch = map(controlmuxread, 0, 1023, 0, 1);
+          randomswitch = map(controlmuxread, 0, 1023, 0, 2);
           updatescreen();
           break;
       }
