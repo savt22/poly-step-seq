@@ -147,7 +147,7 @@ int currentharmmap;
 
 static const int harmonyarray [9] = {1, 3, 5, 6, 1, 3, 5, 6, 6};
 static const int harmonyoctavearray [9] = {0, 0, 0, 0, 12, 12, 12, 12, 12};
-char harmonyname [9] [7] = {"2nd", "4th", "6th", "7th", "2nd", "4th", "6th", "7th"};
+char harmonyname [9] [7] = {"2nd", "4th", "6th", "7th", "2nd", "4th", "6th", "7th", "7th"};
 char keyname[12] [5] = {"C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"};
 char notename[128] [5] = {"C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "G" };
 char scalename[8] [6] = {"maj", "lyd", "mix", "min", "dor", "phr", "chr", "chr"};
