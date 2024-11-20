@@ -1,4 +1,6 @@
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/sI0n5H2NAZI/0.jpg)](https://www.youtube.com/watch?v=sI0n5H2NAZI)
+
 # MIDI Polyphonic Step Sequencer
 
 This is an Arduino Nano-based, MIDI, quantised, polyphonic step sequencer. 
@@ -53,4 +55,6 @@ An additional bass note, an octave down, will play on MIDI channel 2 at full vel
 There's also a random feature - toggling it on when the sequence is off will create a random bassline, each step of which can be edited after creation. 
 
 It also has MIDI clock, MIDI start/stop out and 2PPQN clock out (only tested with Pocket Operator on sync mode 4, but this should work with volcas too). 
+
+
 
