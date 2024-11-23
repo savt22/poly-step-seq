@@ -242,6 +242,9 @@ void n1b() {
     t1 = time1;
     prior_note = note; 
     digitalWrite(n1led, HIGH);
+    note1 = notearray[note1map];
+    note13rd = notearray[(note1map + 2)];
+    note15th = notearray[(note1map +4)];
     currentnote = (note1 + octavenote + rootnote);
     current3rd = (note13rd + octavenote + rootnote);
     current5th = (note15th + octavenote + rootnote);
@@ -267,6 +270,9 @@ void n1() {
     t1 = time1;
     prior_note = note; 
     digitalWrite(n1led, HIGH);
+    note1 = notearray[note1map];
+    note13rd = notearray[(note1map + 2)];
+    note15th = notearray[(note1map +4)];
     currentnote = (note1 + octavenote + rootnote);
     current3rd = (note13rd + octavenote + rootnote);
     current5th = (note15th + octavenote + rootnote);
@@ -295,6 +301,9 @@ void n2() {
     t2 = time2;
     prior_note = note; 
     digitalWrite(n2led, HIGH);
+    note2 = notearray[note2map];
+    note23rd = notearray[(note2map + 2)];
+    note25th = notearray[(note2map +4)];
     currentnote = (note2 + octavenote + rootnote);
     current3rd = (note23rd + octavenote + rootnote);
     current5th = (note25th + octavenote + rootnote);
@@ -323,6 +332,9 @@ void n3() {
     t3 = time3;
     prior_note = note; 
     digitalWrite(n3led, HIGH);
+    note3 = notearray[note3map];
+    note33rd = notearray[(note3map + 2)];
+    note35th = notearray[(note3map +4)];
     currentnote = (note3 + octavenote + rootnote);
     current3rd = (note33rd + octavenote + rootnote);
     current5th = (note35th + octavenote + rootnote);
@@ -351,6 +363,9 @@ void n4() {
     t4 = time4;
     prior_note = note; 
     digitalWrite(n4led, HIGH);
+    note4 = notearray[note4map];
+    note43rd = notearray[(note4map + 2)];
+    note45th = notearray[(note4map +4)];
     currentnote = (note4 + octavenote + rootnote);
     current3rd = (note43rd + octavenote + rootnote);
     current5th = (note45th + octavenote + rootnote);
@@ -379,6 +394,9 @@ void n5() {
     t5 = time5;
     prior_note = note; 
     digitalWrite(n5led, HIGH);
+    note5 = notearray[note5map];
+    note53rd = notearray[(note5map + 2)];
+    note55th = notearray[(note5map +4)];
     currentnote = (note5 + octavenote + rootnote);
     current3rd = (note53rd + octavenote + rootnote);
     current5th = (note55th + octavenote + rootnote);
@@ -407,6 +425,9 @@ void n6() {
     t6 = time6;
     prior_note = note; 
     digitalWrite(n6led, HIGH);
+    note6 = notearray[note6map];
+    note63rd = notearray[(note6map + 2)];
+    note65th = notearray[(note6map +4)];
     currentnote = (note6 + octavenote + rootnote);
     current3rd = (note63rd + octavenote + rootnote);
     current5th = (note65th + octavenote + rootnote);
@@ -435,6 +456,9 @@ void n7() {
     t7 = time7;
     prior_note = note; 
     digitalWrite(n7led, HIGH);
+    note7 = notearray[note7map];
+    note73rd = notearray[(note7map + 2)];
+    note75th = notearray[(note7map +4)];
     currentnote = (note7 + octavenote + rootnote);
     current3rd = (note73rd + octavenote + rootnote);
     current5th = (note75th + octavenote + rootnote);
@@ -463,6 +487,9 @@ void n8() {
     t8 = time8;
     prior_note = note; 
     digitalWrite(n8led, HIGH);
+    note8 = notearray[note8map];
+    note83rd = notearray[(note8map + 2)];
+    note85th = notearray[(note8map +4)];
     currentnote = (note8 + octavenote + rootnote);
     current3rd = (note83rd + octavenote + rootnote);
     current5th = (note85th + octavenote + rootnote);
@@ -497,6 +524,9 @@ void n8b() {
     t8 = time8;
     prior_note = note; 
     digitalWrite(n8led, HIGH);
+    note8 = notearray[note8map];
+    note83rd = notearray[(note8map + 2)];
+    note85th = notearray[(note8map +4)];
     currentnote = (note8 + octavenote + rootnote);
     current3rd = (note83rd + octavenote + rootnote);
     current5th = (note85th + octavenote + rootnote);
@@ -583,37 +613,13 @@ void randomgen () {
   if ((randomswitch == 1) || (randomswitch == 2))  {
     if (randomswitchrun == 1) {
         note8map = random(0, 14);
-        note8 = notearray[note8map];
-        note83rd = notearray[(note8map + 2)];
-        note85th = notearray[(note8map +4)];
         note7map = random(0, 14);
-        note7 = notearray[note7map];
-        note73rd = notearray[(note7map + 2)];
-        note75th = notearray[(note7map +4)];
         note6map = random(0, 14);
-        note6 = notearray[note6map];
-        note63rd = notearray[(note6map + 2)];
-        note65th = notearray[(note6map +4)];
         note5map = random(0, 14);
-        note5 = notearray[note5map];
-        note53rd = notearray[(note5map + 2)];
-        note55th = notearray[(note5map +4)];
         note4map = random(0, 14);
-        note4 = notearray[note4map];
-        note43rd = notearray[(note4map + 2)];
-        note45th = notearray[(note4map +4)];
         note3map = random(0, 14);
-        note3 = notearray[note3map];
-        note33rd = notearray[(note3map + 2)];
-        note35th = notearray[(note3map +4)];
         note2map = random(0, 14);
-        note2 = notearray[note2map];
-        note23rd = notearray[(note2map + 2)];
-        note25th = notearray[(note2map +4)];
         note1map = random(0, 14);
-        note1 = notearray[note1map];
-        note13rd = notearray[(note1map + 2)];
-        note15th = notearray[(note1map +4)];
         time8map = random(0, 3);
         time8 = timearray[time8map];
         time7map = random(0, 3);
@@ -648,7 +654,7 @@ void checkmux () {
   unsigned long notereadstart = micros();
   static unsigned long notereadprevious = 0;
 
-  if (notereadstart - notereadprevious >= 100) {
+  if (notereadstart - notereadprevious >= 5) {
     notereadprevious = notereadstart;
 
     int notemuxread = analogRead(notetimemuxin);
@@ -662,52 +668,28 @@ void checkmux () {
         default:
         Serial.print("NOTHING");
         case 0:
-          note8map = notemap;
-          note8 = notearray[notemap];
-          note83rd = notearray[(notemap + 2)];
-          note85th = notearray[(notemap +4)];
+          note8map = note8map;
           break;
         case 1:
-          note7map = notemap;
-          note7 = notearray[notemap];   
-          note73rd = notearray[(notemap + 2)];
-          note75th = notearray[(notemap +4)];                    
+          note7map = note7map;                  
           break;
         case 2:
-          note6map = notemap;
-          note6 = notearray[notemap]; 
-          note63rd = notearray[(notemap + 2)];
-          note65th = notearray[(notemap +4)];        
+          note6map = note6map;       
           break;
         case 3:
-          note5map = notemap;
-          note5 = notearray[notemap]; 
-          note53rd = notearray[(notemap + 2)];
-          note55th = notearray[(notemap +4)];        
+          note5map = note5map;   
           break;
         case 4:
-          note4map = notemap;
-          note4 = notearray[notemap]; 
-          note43rd = notearray[(notemap + 2)];
-          note45th = notearray[(notemap +4)];      
+          note4map = note4map;    
           break;
         case 5:
-          note3map = notemap;
-          note3 = notearray[notemap];
-          note33rd = notearray[(notemap + 2)];
-          note35th = notearray[(notemap +4)];          
+          note3map = note3map;        
           break;
         case 6:
-          note2map = notemap;
-          note2 = notearray[notemap];
-          note23rd = notearray[(notemap + 2)];
-          note25th = notearray[(notemap +4)];        
+          note2map = note2map;     
           break;
         case 7:
-          note1map = notemap;
-          note1 = notearray[notemap];
-          note13rd = notearray[(notemap + 2)];
-          note15th = notearray[(notemap +4)];        
+          note1map = note1map;     
           break;
         case 8:
           time8 = timearray[timemap];
@@ -781,10 +763,6 @@ void checkmux () {
             case 7:
               notearray = chromaticscale;
               break;
-          }
-          for (int i = 0; i < 8; i++) {
-            int notereset = notemuxvalues[i];
-            notemuxvalues[i] = (notereset + 12);
           }
           updatescreen();
           break;
