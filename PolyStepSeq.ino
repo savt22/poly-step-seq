@@ -668,28 +668,28 @@ void checkmux () {
         default:
         Serial.print("NOTHING");
         case 0:
-          note8map = note8map;
+          note8map = notemap;
           break;
         case 1:
-          note7map = note7map;                  
+          note7map = notemap;                  
           break;
         case 2:
-          note6map = note6map;       
+          note6map = notemap;       
           break;
         case 3:
-          note5map = note5map;   
+          note5map = notemap;   
           break;
         case 4:
-          note4map = note4map;    
+          note4map = notemap;    
           break;
         case 5:
-          note3map = note3map;        
+          note3map = notemap;        
           break;
         case 6:
-          note2map = note2map;     
+          note2map = notemap;     
           break;
         case 7:
-          note1map = note1map;     
+          note1map = notemap;     
           break;
         case 8:
           time8 = timearray[timemap];
