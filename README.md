@@ -50,9 +50,7 @@ You can choose two playback modes, forward or ping-pong. In ping-pong, the seque
 
 Notes/chords play on MIDI channel 1 at full velocity, though this can easily be adjusted in the code. 
 
-An additional bass note, an octave down, will play on MIDI channel 2 at full velocity too, giving you the option of having a bass sound on a separate synth. 
-
-There's also a random feature - toggling it on when the sequence is off will create a random bassline, each step of which can be edited after creation. 
+There's also a random feature - to create a random sequence using motes from the scale and note lenghts up to 1/2 notes, each step of which can be edited after creation. 
 
 It also has MIDI clock, MIDI start/stop out and 2PPQN clock out (only tested with Pocket Operator on sync mode 4, but this should work with volcas too). 
 
